@@ -26,16 +26,33 @@ FACTS = (
     "https://github.com/leomfu/claude-Anki",
     "https://weiliang.dev",
     "https://github.com/leomfu",
-    "不是已经拿到的成绩",
-    "不会自动退订",
-    "声音克隆",
-    "127.0.0.1",
+    "6 到 6.5 是学习目标",
+    "声音是现成的",
+    "退订会整理成一份清单",
+    "确认之后才写标签",
     "Asia/Shanghai",
     "2026-11-07 22:20",
     "ff9e4255780fefb5cde7a18c32e2fbb55e4277f1",
+    "0221f11df8d9c0e8ba6306a1f1c81c4fe6672656",
     "223856ff7680fd9e4a9659ca51f9cba189bb286f",
     "5c18d708cdb87ba230d41a8d0b276bb35826800c",
+)
+VISITOR_ABSENT = (
+    "自动退订",
+    "声音克隆",
+    "127.0.0.1",
     "没有可靠的全局暂停",
+    "Weiliang",
+    "服务商不写",
+)
+MAINTENANCE_NOTES = (
+    "不打开 `README.md` 和 `static.md`",
+    "名字是 Weiliang",
+    "127.0.0.1",
+    "没有可靠的全局暂停",
+    "自动退订",
+    "声音克隆",
+    "不是已经拿到的成绩",
 )
 FORBIDDEN = (
     "weylfu",
@@ -124,6 +141,14 @@ def main():
         check(token.lower() not in lowered, f"no {token}")
     check("assets/hero.gif" in readme and "assets/learning.gif" in readme, "README uses the two loops")
     check(".gif" not in still, "static.md has no GIF")
+    check("灯会慢慢亮一点" in readme, "README mentions the lamp loop")
+    check("这一页的画面是停着的" in still, "static.md says the pictures are still")
+    for phrase in VISITOR_ABSENT:
+        check(phrase not in readme and phrase not in still, f"visitor pages omit {phrase}")
+    for phrase in MAINTENANCE_NOTES:
+        check(phrase in maintenance, f"maintenance keeps {phrase}")
+    build_src = read("scripts/build_assets.py")
+    check("README" not in build_src and "static.md" not in build_src, "image build does not name the prose files")
     check("python3 scripts/build_assets.py" in maintenance, "maintenance has the build command")
     check("python3 scripts/verify_readme.py" in maintenance, "maintenance has the verify command")
     for name in ("README.md", "static.md"):
